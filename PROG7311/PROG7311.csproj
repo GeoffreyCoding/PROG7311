@@ -148,7 +148,10 @@
     </Content>
     <Content Include="Images\envelope-solid.svg" />
     <Content Include="Images\homepage_Farmers_Image.png" />
+    <Content Include="Images\Location.png" />
     <Content Include="Images\lock-solid.svg" />
+    <Content Include="Images\Person.png" />
+    <Content Include="Images\PhoneIcon.png" />
     <Content Include="Layouts\AddFarmer.aspx" />
     <Content Include="App_Data\Database1.mdf" />
     <Content Include="App_Data\Database1_log.ldf">
@@ -288,7 +291,6 @@
     <Compile Include="Interfaces\DBInterface.cs" />
     <Compile Include="Interfaces\IAddProductInterface.cs" />
     <Compile Include="Interfaces\LoginInterface.cs" />
-    <Compile Include="Interfaces\ValidationInterface.cs" />
     <Compile Include="Interfaces\ViewFarmerInterface.cs" />
     <Compile Include="Layouts\AddFarmer.aspx.cs">
       <DependentUpon>AddFarmer.aspx</DependentUpon>
@@ -329,9 +331,7 @@
     <Compile Include="Layouts\ViewFarmerProducts.aspx.designer.cs">
       <DependentUpon>ViewFarmerProducts.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Objects Classes\Employees.cs" />
     <Compile Include="Objects Classes\Farmers.cs" />
-    <Compile Include="Objects Classes\Passwords.cs" />
     <Compile Include="Objects Classes\Product.cs" />
     <Compile Include="Objects Classes\userDataStore.cs" />
     <Compile Include="Objects Classes\viewProductFiltercs.cs" />

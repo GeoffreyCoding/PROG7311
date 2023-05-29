@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+/*Geoffrey Huth ST10081932 PROG7311 POE Task 2*/
 namespace PROG7311.Objects_Classes
 {
     public class Product

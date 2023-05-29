@@ -18,28 +18,49 @@ namespace PROG7311.Classes
         /// <returns></returns>
         public DataTable filterProductTypes()
         {
-            int checkFarmerId = _toolBox.viewProductFiltercs.FarmerId;
-            string checkFarmerType = _toolBox.viewProductFiltercs.FilterProductType;
-            DateTime startDate = _toolBox.viewProductFiltercs.StartDate;
-            DateTime endDate = _toolBox.viewProductFiltercs.EndDate;
             DataTable filteredDataTable = new DataTable();
-            if (checkFarmerId == 0 && checkFarmerType == "All")
+            try
             {
-                filteredDataTable = _toolBox._DBHandler.filterProductData(1,checkFarmerType,checkFarmerId.ToString(),startDate,endDate);
+                string sqlCmd = "";
+                string farmerName = _toolBox.viewProductFiltercs.FarmerName;
+                string farmerType = _toolBox.viewProductFiltercs.FilterProductType;
+                string startDate = _toolBox.viewProductFiltercs.StartDate;
+                string endDate = _toolBox.viewProductFiltercs.EndDate;
+                bool filterName = _toolBox.viewProductFiltercs.EnableName;
+                bool filterType = _toolBox.viewProductFiltercs.EnableType;
+                bool filterStartDate = _toolBox.viewProductFiltercs.EnableStartDate;
+                bool filterEndDate = _toolBox.viewProductFiltercs.EnableEndDate;
+                //checking if all options were selected
+                sqlCmd = sqlSelector(farmerType,farmerName,startDate,endDate,filterType,filterName,filterStartDate,filterEndDate);
+                filteredDataTable = _toolBox._DBHandler.filterProductData(sqlCmd);
+                return filteredDataTable;
             }
-            else if(checkFarmerId == 0)
+            catch(Exception ex)
             {
-                filteredDataTable = _toolBox._DBHandler.filterProductData(2, checkFarmerType, checkFarmerId.ToString(), startDate, endDate);
-            }else if(checkFarmerType == "All")
-            {
-                filteredDataTable = _toolBox._DBHandler.filterProductData(3, checkFarmerType, checkFarmerId.ToString(), startDate, endDate);
+                return filteredDataTable;
             }
-            else
-            {
-                filteredDataTable = _toolBox._DBHandler.filterProductData(4,checkFarmerType,checkFarmerId.ToString(),startDate,endDate);
-            }
+            
+        }
 
-            return filteredDataTable;
+        public string sqlSelector(string filterType,string filterFarmerName, string filterStartDate, string filterEndDate,bool typeFilter,bool nameFilter,bool startFilter,bool endFilter)
+        {
+            string sqlCmd = "SELECT P.pType,P.pDateAdded,F.fName + ',' + F.sName As \"Fullname\",F.fLocation,F.fEmail,F.fPhoneNumber " +
+                            "FROM Farmer F,ProductType P,ProductList PL " +
+                            "WHERE (PL.farmerId = F.FarmerId) AND (PL.prodTypeId = P.pTypeId) ";
+            if (nameFilter)
+            {
+                sqlCmd = sqlCmd + " AND (F.fName LIKE '%" + filterFarmerName + "%' OR F.sName LIKE '%" + filterFarmerName + "%')";
+            }
+            if (typeFilter)
+            {
+                sqlCmd = sqlCmd + " AND (P.pType LIKE '%" + filterType + "%')";
+            }
+            if (startFilter  && endFilter)
+            {
+                sqlCmd = sqlCmd + " AND P.pDateAdded >= '" + filterStartDate + "' AND P.pDateAdded <= '" + filterEndDate + "'";
+            }
+            return sqlCmd;
+
         }
     }
 }

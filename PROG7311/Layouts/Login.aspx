@@ -54,6 +54,10 @@
                         <!--Login Button-->
                         <asp:Button type="submit" text="Login" class="btn btn-primary btn-sm w-100" id="btnLogin" OnClick="btnLogin_Click" runat="server"></asp:Button>
                     </asp:Button>
+                        <div class="alert alert-dismissible alert-danger" id="invalidCredentials" runat="server" style="display: none;">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" fdprocessedid="d2m2i"></button>
+                            <strong>Oh snap!</strong> <a class="alert-link"></a>Invalid Email or Password!
+                    </div>
                 </div>
             </form>
         </div>

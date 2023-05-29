@@ -16,17 +16,16 @@
                     <div class="mb-4">
                         <div class="form-group">
                             <label for="txtFirstName">
-                                <img src="full-name-image.jpg" alt="First Name" class="input-image">
+                                <img src="../Images/Person.png" alt="First Name" class="input-image">
                                 First Name:
                             </label>
-                            <%--  --%>
                             <asp:TextBox runat="server" ID="txtFirstName" CssClass="form-control" placeholder="Enter first name" required></asp:TextBox>
                             <asp:RegularExpressionValidator ID="revFirstName" runat="server" ControlToValidate="txtFirstName" ErrorMessage="Firstname can only contain letters!"
                                 ValidationExpression="^[A-Za-z\s]*$" CssClass="error-label" Display="Dynamic"></asp:RegularExpressionValidator>
                         </div>
                         <div class="form-group">
                             <label for="txtSurname">
-                                <img src="../Images/lock-solid.svg" alt="txtSurname" class="input-image">
+                                <img src="../Images/Person.png" alt="txtSurname" class="input-image">
                                 Surname:
                             </label>
                             <asp:TextBox runat="server" ID="txtSurname" CssClass="form-control" placeholder="Enter Surname" required></asp:TextBox>
@@ -45,7 +44,7 @@
                         </div>
                         <div class="form-group">
                             <label for="txtLocation">
-                                <img src="location-image.jpg" alt="Location" class="input-image">
+                                <img src="../Images/Location.png" alt="Location" class="input-image">
                                 Location:
                             </label>
                             <asp:TextBox runat="server" ID="txtLocation" CssClass="form-control" placeholder="Enter location" required></asp:TextBox>
@@ -54,12 +53,12 @@
                         </div>
                         <div class="form-group">
                             <label for="txtPhoneNumber">
-                                <img src="../Images/envelope-solid.svg" alt="PhoneNumber" class="input-image">
+                                <img src="../Images/PhoneIcon.png" alt="PhoneNumber" class="input-image">
                                 Phone Number:
                             </label>
                             <asp:TextBox runat="server" ID="txtPhoneNumber" CssClass="form-control" placeholder="Enter Phone Number" required></asp:TextBox>
-                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtLocation" ErrorMessage="Location can only contain letters and numbers!"
-                                ValidationExpression="^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$" CssClass="error-label" Display="Dynamic"></asp:RegularExpressionValidator>
+                            <asp:RegularExpressionValidator ID="revPhoneNumber" runat="server" ControlToValidate="txtPhoneNumber" ErrorMessage="Phone number must be 10 digits long"
+                                ValidationExpression="^[0-9]{10}$" CssClass="error-label" Display="Dynamic"></asp:RegularExpressionValidator>
                         </div>
                         <div class="form-group">
                             <label for="txtPassword">
@@ -80,10 +79,6 @@
                             <asp:CompareValidator ID="cvPasswordMatch" CssClass="error-label" runat="server" ControlToCompare="txtPassword" ControlToValidate="txtConfirmPassword" ErrorMessage="Passwords do not match" Display="Dynamic"></asp:CompareValidator>
                         </div>
                         <asp:Button runat="server" ID="btnAddFarmer" CssClass="btn btn-primary btn-login" Text="Add Farmer" Width="278px" OnClick="btnAddFarmer_Click" CausesValidation="true" />
-                        <div class="alert alert-dismissible alert-danger" id="invalidEmail" runat="server">
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" fdprocessedid="d2m2i"></button>
-                            <strong>Oh snap!</strong> <a class="alert-link">Invalid Email!</a>The email must be unique
-                        </div>
                     </div>
                 </div>
             </div>

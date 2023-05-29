@@ -1,5 +1,4 @@
 ﻿<%@ Page Title="Homepage" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="~/Layouts/HomePage.aspx.cs" Inherits="PROG7311.HomePage" %>
-
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <!DOCTYPE html>
     <html>

@@ -22,47 +22,53 @@ namespace PROG7311.Classes
         /// <summary>
         /// assigns all the data to the Farmer object and then loads the addNew Farmer method
         /// </summary>
-        public bool addNewFarmer(string fName,string userSurname,string userEmail,string userLocation,string userPhoneNumber ,string password , System.Web.UI.WebControls.Label lblInvalidEmail)
+        public bool addNewFarmer(string fName,string userSurname,string userEmail,string userLocation,string userPhoneNumber ,string password)
         {
-            bool isValid = false;
-            //validate userEmail to ensure it is unique
-            isValid = _toolBox._DBHandler.isFarmer(userEmail);
-            if(isValid == true)
+            try 
             {
-                //sets email error popup to visible
-                lblInvalidEmail.Visible = true;
-                return false;
-            }
-            else
-            {
-                //sets email error popup to invisible
-                lblInvalidEmail.Visible = false;
-                //hash password and returning hasehd password and the salt key
-                string[] hashingResults = _toolBox._pwdHashing.pwdHashingWithoutSalt(password);
-                _toolBox._userDataStore.UserPassword = hashingResults[0];
-                _toolBox._userDataStore.UserSalt = hashingResults[1];
-                _toolBox._userDataStore.UserEmail = userEmail;
-                //creating password object
-                isValid = createPasswordObject();
-                //saving data to Farmer object
-                Farmer farmer = new Farmer();
-                farmer.fName = fName;
-                farmer.sName = userSurname;
-                farmer.fEmail = userEmail;
-                farmer.fLocation = userLocation;
-                farmer.fPhoneNumber = userPhoneNumber;
-                farmer.fPasswordId = _toolBox._userDataStore.PasswordID;
-                //save new password , password id to user datastore
-                isValid = _toolBox._DBHandler.addFarmerToDB1Entity(farmer);
-                //creating productlist entity
-                if (isValid != false)
+                bool isValid = false;
+                //validate userEmail to ensure it is unique
+                isValid = _toolBox._DBHandler.isFarmer(userEmail);
+                if (isValid == true)
                 {
-                    //displays a modal style dialogue box that the user will see notifying them that there was a problem when addinding
-                    //the object to the database. QUESTION: What information is relevant to the user vs a developer in terms of crashes?
-                    return true;
+                    //sets email error popup to visible
+                    return false;
                 }
+                else
+                {
+                    //sets email error popup to invisible
+                    //hash password and returning hasehd password and the salt key
+                    string[] hashingResults = _toolBox._pwdHashing.pwdHashingWithoutSalt(password);
+                    _toolBox._userDataStore.UserPassword = hashingResults[0];
+                    _toolBox._userDataStore.UserSalt = hashingResults[1];
+                    _toolBox._userDataStore.UserEmail = userEmail;
+                    //creating password object
+                    isValid = createPasswordObject();
+                    //saving data to Farmer object
+                    Farmer farmer = new Farmer();
+                    farmer.fName = fName;
+                    farmer.sName = userSurname;
+                    farmer.fEmail = userEmail;
+                    farmer.fLocation = userLocation;
+                    farmer.fPhoneNumber = userPhoneNumber;
+                    farmer.fPasswordId = _toolBox._userDataStore.PasswordID;
+                    //save new password , password id to user datastore
+                    isValid = _toolBox._DBHandler.addFarmerToDB1Entity(farmer);
+                    //creating productlist entity
+                    if (isValid != false)
+                    {
+                        //displays a modal style dialogue box that the user will see notifying them that there was a problem when addinding
+                        //the object to the database. QUESTION: What information is relevant to the user vs a developer in terms of crashes?
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
                 return false;
             }
+            
         }
         /// <summary>
         /// creates the object for password
@@ -70,6 +76,7 @@ namespace PROG7311.Classes
         public bool createPasswordObject()
         {
             int passwordId = -1;
+            //Creating password object
             Password password = new Password();
             password.HashedPassword = _toolBox._userDataStore.UserPassword;
             password.Salt = _toolBox._userDataStore.UserSalt;   

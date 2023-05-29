@@ -9,20 +9,31 @@ using PROG7311.Objects_Classes;
 using System.Globalization;
 using System.Data;
 using System.Diagnostics;
-
+//Geoffrey Huth ST10081932 POE TASK 2
 namespace PROG7311.Classes
 {
-    public  class DBHandler : DBInterface
+    /// <summary>
+    /// DB Hander class. All interactions with the database entity using entity framework or directly with the database1 DB using sql
+    /// is handled in this class
+    /// </summary>
+    public class DBHandler : IDBInterface
     {
+        /// <summary>
+        /// creating instance for toolbox
+        /// </summary>
         private static Type toolBox = typeof(toolBox);
         private static object[] parameters = new object[] { };
         private static object obj = Activator.CreateInstance(toolBox, parameters);
         private toolBox _toolBox = obj as toolBox;
-
+        //CONNECTION STRING
         private string ConnString = ConfigurationManager.ConnectionStrings["ConnString"].ConnectionString;
+        //SQL COMMAND STORE
         private SqlCommand _sqlCommand;
+        //SQL CONNECTION STORE
         private SqlConnection _connection;
+        //DATABASE ENTITY OBJECT
         private Database1Entities1 Entity;
+        //creating database connection
         public void connectDB()
         {
             this._connection = new SqlConnection(ConnString);
@@ -32,13 +43,14 @@ namespace PROG7311.Classes
                 CommandType = CommandType.Text
             };
         }
-
+        //checking if an email is in the database
         public bool isEmployee(string userEmail)
         {
             try
             {
                 using (this.Entity = new Database1Entities1())
                 {
+                    //getting the first record or returning null of the matching record
                     var isFound = this.Entity.Employees.FirstOrDefault(p => p.empEmail == userEmail);
                     if (isFound != null)
                     {
@@ -53,14 +65,16 @@ namespace PROG7311.Classes
             }
 
         }
-
+        //checking wether an email is in the farmer table
         public bool isFarmer(string userEmail)
         {
             try
             {
                 using (this.Entity = new Database1Entities1())
                 {
-                    var isFound = this.Entity.Employees.FirstOrDefault(p => p.empEmail == userEmail);
+
+                    //getting the first record or returning null of the matching record
+                    var isFound = this.Entity.Farmers.FirstOrDefault(p => p.fEmail == userEmail);
                     if (isFound != null)
                     {
                         return true;
@@ -74,26 +88,53 @@ namespace PROG7311.Classes
             }
 
         }
-
-        public bool isProductType(string productType)
+        /// <summary>
+        /// Checking if the product type already exists
+        /// </summary>
+        public bool isProductType(string productType,string userEmail)
         {
+            this.connectDB();
+            bool isFound = false;
+
             try
             {
-                using (this.Entity = new Database1Entities1())
+                var sqlCommand = new SqlCommand
                 {
-                    var isFound = this.Entity.ProductTypes.FirstOrDefault(p => p.pType == productType);
-                    if (isFound != null)
+                    Connection = this._connection,
+                    CommandType = CommandType.Text,
+                    CommandText = "SELECT P.pType FROM ProductType P,Farmer F,ProductList PL " +
+                                  "WHERE (PL.farmerId = F.FarmerId) AND (PL.prodTypeId = P.pTypeId) " +
+                                  "AND (P.pType LIKE '%" + productType + "%') " +
+                                  "AND (F.fEmail LIKE '%" + userEmail + "%') "
+                };
+
+                using (var sqlDataAdapter = new SqlDataAdapter(sqlCommand))
+                {
+                    var dataTable = new DataTable();
+                    sqlDataAdapter.Fill(dataTable);
+
+                    if (dataTable.Rows.Count > 0)
                     {
-                        return true;
+                        return true; // Result found
                     }
-                    return false;
+                    else
+                    {
+                        return false; // No result found
+                    }
                 }
+
+
+                return false;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                // Handle the exception
                 return false;
             }
         }
+        /// <summary>
+        /// adding the farmers password to the database and then returning the new passwords, passwordId
+        /// </summary>
         public int saveFarmerPassword(Password password)
         {
             try
@@ -110,23 +151,29 @@ namespace PROG7311.Classes
             catch (Exception ex) { return -1; }
 
         }
+        /// <summary>
+        /// Adding farmer object to the database entity
+        /// </summary>
         public bool addFarmerToDB1Entity(Farmer farmer)
         {
             try
             {
                 using (var context = new Database1Entities1())
                 {
+                    //adding object
                     context.Farmers.Add(farmer);
                     context.SaveChanges();
                     return true;
                 }
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 return false;
             }
-
         }
+        /// <summary>
+        /// adding the product type object to the database entity and returning the new records primary key (pTypeId).
+        /// </summary>
         public int addProductTypeToDB1Entity(ProductType productType)
         {
             try
@@ -136,11 +183,12 @@ namespace PROG7311.Classes
                 {
                     context.ProductTypes.Add(productType);
                     context.SaveChanges();
+                    //LinQ
                     newTypeId = context.ProductTypes.FirstOrDefault(p => p.pType == productType.pType).pTypeId;
                     return newTypeId;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             { return -1; }
         }
 
@@ -150,12 +198,12 @@ namespace PROG7311.Classes
             {
                 using (var context = new Database1Entities1())
                 {
-                    context.ProductLists.Add(productList);   
+                    context.ProductLists.Add(productList);
                     context.SaveChanges();
                     return true;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             { return false; }
         }
         public bool addProductDataToDB1Entity(ProductStore productStore)
@@ -164,12 +212,13 @@ namespace PROG7311.Classes
             {
                 using (var context = new Database1Entities1())
                 {
+                    //LinQ
                     context.ProductStores.Add(productStore);
                     context.SaveChanges();
                     return true;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             { return false; }
         }
 
@@ -215,43 +264,10 @@ namespace PROG7311.Classes
                 return false;
             }
         }
-
-        public List<string> getFarmerNames()
-        {
-            try
-            {
-                List<string> farmerNameList;
-                using (this.Entity = new Database1Entities1())
-                {
-                   farmerNameList = this.Entity.Farmers.Select(p => p.fName).ToList();
-                    return farmerNameList;
-                }
-            }
-            catch (Exception ex)
-            {
-                List<string> farmerNameList = null;
-                return farmerNameList;
-            }
-        }
-
-        public List<string> getProductType()
-        {
-            try
-            {
-                List<string> productTypeList;
-                using (this.Entity = new Database1Entities1())
-                {
-                    productTypeList = this.Entity.ProductTypes.Select(p => p.pType).ToList();
-                    return productTypeList;
-                }
-            }
-            catch (Exception ex)
-            {
-                List<string> productTypeList = null;
-                return productTypeList;
-            }
-        }
-
+        /// <summary>
+        /// getting all the product and the respective farmer data without any of the filter options. Only used when page loads
+        /// </summary>
+        /// <returns></returns>
         public DataTable getProductDataTable()
         {
             this.connectDB();
@@ -263,8 +279,8 @@ namespace PROG7311.Classes
                 {
                     Connection = this._connection,
                     CommandType = CommandType.Text,
-                    CommandText = "SELECT  Farmer.fName + ',' + Farmer.sName AS fFullname,ProductType.pType,ProductType.pDateAdded " +
-                                  "From ProductType,ProductList,Farmer "+
+                    CommandText = "SELECT  Farmer.fName + ',' + Farmer.sName AS Fullname,ProductType.pType,ProductType.pDateAdded,Farmer.fLocation,Farmer.fEmail,Farmer.fPhoneNumber " +
+                                  "From ProductType,ProductList,Farmer " +
                                   "where Farmer.FarmerId = ProductList.farmerId " +
                                   "AND ProductList.prodTypeId = ProductType.pTypeId"
                 };
@@ -282,7 +298,27 @@ namespace PROG7311.Classes
                 return productDataTable;
             }
         }
-
+        /// <summary>
+        /// Getting the farmers ID by using their name in a LinQ 
+        /// </summary>
+        public int getFarmerIdByName(string userFirstName)
+        {
+            int userId = -1;
+            try
+            {
+                using (this.Entity = new Database1Entities1())
+                {
+                    userId = this.Entity.Farmers.FirstOrDefault(p => p.fName == userFirstName).FarmerId;
+                    if (userId != null)
+                    {
+                        return userId;
+                    }
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            { return -1; }
+        }
         public int getFarmerId(string userEmail)
         {
             int userId = -1;
@@ -291,7 +327,7 @@ namespace PROG7311.Classes
                 using (this.Entity = new Database1Entities1())
                 {
                     userId = this.Entity.Farmers.FirstOrDefault(p => p.fEmail == userEmail).FarmerId;
-                    if(userId != null)
+                    if (userId != null)
                     {
                         return userId;
                     }
@@ -302,46 +338,31 @@ namespace PROG7311.Classes
             { return -1; }
 
         }
-
-        public DataTable filterProductData( int sqlType,string filterTypeId,string filterFarmerId,DateTime filterStartDate,DateTime filterEndDate)
+        public int getTypeId(string productType)
+        {
+            int typeId = -1;
+            try
             {
-            string sqlCmd = "";
+                using (this.Entity = new Database1Entities1())
+                {
+                    typeId = this.Entity.ProductTypes.FirstOrDefault(p => p.pType == productType).pTypeId;
+                    if (typeId != null)
+                    {
+                        return typeId;
+                    }
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            { return -1; }
+        }
 
+        public DataTable filterProductData(string sqlCmd)
+        {
             this.connectDB();
             DataTable FilteredProductDataTable = new DataTable();
-            try 
+            try
             {
-                switch (sqlType)
-                {
-                    case 1:
-                        sqlCmd = "Select ProductType.pType,ProductType.pName,ProductType.pDateAdded " +
-                                 "from ProductType,Farmer,ProductList " +
-                                 "Where Farmer.FarmerId = ProductList.farmerId AND ProductList.prodTypeId = ProductType.pTypeId " +
-                                 "AND ProductType.pDateAdded > "+ filterStartDate.Date.ToString() +" AND " +
-                                 "ProductType.pDateAdded < " + filterEndDate.Date.ToString();
-                        break;
-                    case 2:
-                        sqlCmd = "Select ProductType.pType,ProductType.pName,ProductType.pDateAdded " +
-                                 "from ProductType,Farmer,ProductList " +
-                                 "Where ProductList.farmerId = " + filterFarmerId + " AND ProductList.prodTypeId = ProductType.pTypeId " +
-                                 "AND ProductType.pDateAdded > " + filterStartDate.Date.ToString() + " AND " +
-                                 "ProductType.pDateAdded < " + filterEndDate.Date.ToString(); ;
-                        break;
-                    case 3:
-                        sqlCmd = "Select ProductType.pType,ProductType.pName,ProductType.pDateAdded " +
-                                 "from ProductType,Farmer,ProductList " +
-                                 "Where Farmer.farmerId = ProductList.FarmerId AND ProductList.prodTypeId = " + filterTypeId + " " +
-                                 "AND ProductType.pDateAdded > " + filterStartDate.Date.ToString() + " AND " +
-                                 "ProductType.pDateAdded < " + filterEndDate.Date.ToString(); ;
-                        break;
-                    case 4:
-                        sqlCmd = "Select ProductType.pType,ProductType.pName,ProductType.pDateAdded " +
-                                 "from ProductType,Farmer,ProductList " +
-                                 "Where ProductList.farmerId = "+ filterFarmerId+" AND ProductList.prodTypeId = "+filterTypeId + " " +
-                                 "AND ProductType.pDateAdded > " + filterStartDate.Date.ToString() + " AND " +
-                                 "ProductType.pDateAdded < " + filterEndDate.Date.ToString(); ; ;
-                        break;
-                }
                 var sqlCommand = new SqlCommand
                 {
                     Connection = this._connection,
@@ -355,11 +376,32 @@ namespace PROG7311.Classes
                 }
 
                 return FilteredProductDataTable;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                return FilteredProductDataTable; 
+                return FilteredProductDataTable;
             }
         }
+        public int getFarmerIdViaEmail(string userEmail)
+        {
+            int farmerId = -1;
+            try
+            {
+                using (this.Entity = new Database1Entities1())
+                {
+                    farmerId = this.Entity.Farmers.FirstOrDefault(p => p.fEmail == userEmail).FarmerId;
+                    if (farmerId != null)
+                    {
+                        return farmerId;
+                    }
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            { return -1; }
+
+        }
+
     }
 }
 //------------------------------------------------------------End-Of-File--------------------------------------------------

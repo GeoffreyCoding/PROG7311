@@ -15,13 +15,13 @@ namespace PROG7311.Layouts
     {
 
         /// <summary>
-        /// ddlFarmers control.
+        /// txtFarmers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFarmers;
+        protected global::System.Web.UI.WebControls.TextBox txtFarmers;
 
         /// <summary>
         /// txtStartDate control.
@@ -42,13 +42,22 @@ namespace PROG7311.Layouts
         protected global::System.Web.UI.WebControls.TextBox txtEndDate;
 
         /// <summary>
-        /// ddlProductType control.
+        /// txtProductType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlProductType;
+        protected global::System.Web.UI.WebControls.TextBox txtProductType;
+
+        /// <summary>
+        /// btnClear control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnClear;
 
         /// <summary>
         /// btnFilter control.

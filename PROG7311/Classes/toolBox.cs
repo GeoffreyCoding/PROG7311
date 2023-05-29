@@ -4,9 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+//Geoffrey Huth ST10081932 PROG7311 POE TASK 2
 namespace PROG7311.Classes
 {
+    /// <summary>
+    /// The toolbox controls all the instances of the application.
+    /// </summary>
     public class toolBox
     {
         //Login
@@ -27,16 +30,10 @@ namespace PROG7311.Classes
         public userDataStore _userDataStore = userDataStore.Instance;
         //Farmer Object Class
         public Farmers _Farmers = Farmers.Instance;
-        //Employee Object Class
-        public Employees _Employees = Employees.Instance;
-        //Password Object Class
-        public Passwords _Password = Passwords.Instance;
         //Product Object Class;
         public Product _Product = Product.Instance;
         //View product filter object class
         public viewProductFiltercs viewProductFiltercs = viewProductFiltercs.Instance;
-        //------------------------------------------------------------End-Of-File--------------------------------------------------
-
-
     }
 }
+//------------------------------------------------------------End-Of-File--------------------------------------------------

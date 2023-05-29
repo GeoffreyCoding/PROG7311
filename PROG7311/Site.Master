@@ -52,7 +52,7 @@
                 <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
                 <%-- Common menu items --%>
-                <li class="nav-item"><a class="nav-link" href="HomePage.aspx">HomePage</a></li>
+                <li class="nav-item" id ="homePage"><a class="nav-link" href="HomePage.aspx">HomePage</a></li>
                 <%-- Conditional menu items based on the logged-in user --%>
                 <li class="nav-item" id="adminAddFarmer" style="display: none;"><a class="nav-link" href="AddFarmer.aspx">Add Farmer</a></li>                       
                 <li class="nav-item" id="adminViewFarmerProducts" style="display: none;"><a class="nav-link" href="ViewFarmerProducts.aspx">View Farmer Products</a></li>                       
@@ -81,12 +81,12 @@
             document.getElementById("adminAddFarmer").style.display = "block";
             document.getElementById("adminViewFarmerProducts").style.display = "block";
             document.getElementById("btnSignOut").style.display = "block";
+            document.getElementById("homePage").style.display = "block";
         } else if (userRole === "Farmer") {
             document.getElementById("farmerAddProduct").style.display = "block";
             document.getElementById("btnSignOut").style.display = "block";
-        } else {
-            document.getElementById("loginMenuItem").style.display = "block";
-        }
+            document.getElementById("homePage").style.display = "block";
+        } 
     </script>
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/Scripts/bootstrap.js") %>
