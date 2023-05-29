@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Database1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="empId" />
+          </Key>
+          <Property Name="empId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="empName" Type="varchar(max)" Nullable="false" />
+          <Property Name="empEmail" Type="varchar(max)" Nullable="false" />
+          <Property Name="empLocation" Type="varchar(max)" Nullable="false" />
+          <Property Name="empPhoneNumber" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="empTypeId" Type="int" Nullable="false" />
+          <Property Name="empPwdId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmpType">
+          <Key>
+            <PropertyRef Name="EmpTypeId" />
+          </Key>
+          <Property Name="EmpTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tName" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="tDescription" Type="varchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Farmer">
+          <Key>
+            <PropertyRef Name="FarmerId" />
+          </Key>
+          <Property Name="FarmerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fName" Type="varchar(max)" Nullable="false" />
+          <Property Name="sName" Type="varchar(max)" Nullable="false" />
+          <Property Name="fEmail" Type="varchar(max)" Nullable="false" />
+          <Property Name="fLocation" Type="varchar(max)" Nullable="false" />
+          <Property Name="fPhoneNumber" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="fPasswordId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Password">
+          <Key>
+            <PropertyRef Name="PasswordID" />
+          </Key>
+          <Property Name="PasswordID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HashedPassword" Type="varchar(max)" Nullable="false" />
+          <Property Name="Salt" Type="varchar(max)" Nullable="false" />
+          <Property Name="Email" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductList">
+          <Key>
+            <PropertyRef Name="listId" />
+          </Key>
+          <Property Name="listId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="farmerId" Type="int" Nullable="false" />
+          <Property Name="prodTypeId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductStore">
+          <Key>
+            <PropertyRef Name="prodId" />
+          </Key>
+          <Property Name="prodId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="prodQty" Type="int" Nullable="false" />
+          <Property Name="prodRemaining" Type="int" Nullable="false" />
+          <Property Name="ProdTypeId" Type="int" Nullable="false" />
+          <Property Name="ProdDateAdded" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductType">
+          <Key>
+            <PropertyRef Name="pTypeId" />
+          </Key>
+          <Property Name="pTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="pType" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="pName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="pDateAdded" Type="date" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_Employee1">
+          <End Role="EmpType" Type="Self.EmpType" Multiplicity="1" />
+          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmpType">
+              <PropertyRef Name="EmpTypeId" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="empTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Eomployee2">
+          <End Role="Password" Type="Self.Password" Multiplicity="1" />
+          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Password">
+              <PropertyRef Name="PasswordID" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="empPwdId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Farmer1">
+          <End Role="Password" Type="Self.Password" Multiplicity="1" />
+          <End Role="Farmer" Type="Self.Farmer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Password">
+              <PropertyRef Name="PasswordID" />
+            </Principal>
+            <Dependent Role="Farmer">
+              <PropertyRef Name="fPasswordId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProductList1">
+          <End Role="Farmer" Type="Self.Farmer" Multiplicity="1" />
+          <End Role="ProductList" Type="Self.ProductList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Farmer">
+              <PropertyRef Name="FarmerId" />
+            </Principal>
+            <Dependent Role="ProductList">
+              <PropertyRef Name="farmerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProductList2">
+          <End Role="ProductType" Type="Self.ProductType" Multiplicity="1" />
+          <End Role="ProductList" Type="Self.ProductList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductType">
+              <PropertyRef Name="pTypeId" />
+            </Principal>
+            <Dependent Role="ProductList">
+              <PropertyRef Name="prodTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProductType1">
+          <End Role="ProductType" Type="Self.ProductType" Multiplicity="1" />
+          <End Role="ProductStore" Type="Self.ProductStore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductType">
+              <PropertyRef Name="pTypeId" />
+            </Principal>
+            <Dependent Role="ProductStore">
+              <PropertyRef Name="ProdTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Database1ModelStoreContainer">
+          <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmpType" EntityType="Self.EmpType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Farmer" EntityType="Self.Farmer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Password" EntityType="Self.Password" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductList" EntityType="Self.ProductList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductStore" EntityType="Self.ProductStore" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductType" EntityType="Self.ProductType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_Employee1" Association="Self.fk_Employee1">
+            <End Role="EmpType" EntitySet="EmpType" />
+            <End Role="Employee" EntitySet="Employee" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Eomployee2" Association="Self.fk_Eomployee2">
+            <End Role="Password" EntitySet="Password" />
+            <End Role="Employee" EntitySet="Employee" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Farmer1" Association="Self.FK_Farmer1">
+            <End Role="Password" EntitySet="Password" />
+            <End Role="Farmer" EntitySet="Farmer" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProductList1" Association="Self.fk_ProductList1">
+            <End Role="Farmer" EntitySet="Farmer" />
+            <End Role="ProductList" EntitySet="ProductList" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProductList2" Association="Self.fk_ProductList2">
+            <End Role="ProductType" EntitySet="ProductType" />
+            <End Role="ProductList" EntitySet="ProductList" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProductType1" Association="Self.fk_ProductType1">
+            <End Role="ProductType" EntitySet="ProductType" />
+            <End Role="ProductStore" EntitySet="ProductStore" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Database1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="empId" />
+          </Key>
+          <Property Name="empId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="empName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="empEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="empLocation" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="empPhoneNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="empTypeId" Type="Int32" Nullable="false" />
+          <Property Name="empPwdId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EmpType" Relationship="Self.fk_Employee1" FromRole="Employee" ToRole="EmpType" />
+          <NavigationProperty Name="Password" Relationship="Self.fk_Eomployee2" FromRole="Employee" ToRole="Password" />
+        </EntityType>
+        <EntityType Name="EmpType">
+          <Key>
+            <PropertyRef Name="EmpTypeId" />
+          </Key>
+          <Property Name="EmpTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="tDescription" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Employees" Relationship="Self.fk_Employee1" FromRole="EmpType" ToRole="Employee" />
+        </EntityType>
+        <EntityType Name="Farmer">
+          <Key>
+            <PropertyRef Name="FarmerId" />
+          </Key>
+          <Property Name="FarmerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="sName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fLocation" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fPhoneNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fPasswordId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Password" Relationship="Self.FK_Farmer1" FromRole="Farmer" ToRole="Password" />
+          <NavigationProperty Name="ProductLists" Relationship="Self.fk_ProductList1" FromRole="Farmer" ToRole="ProductList" />
+        </EntityType>
+        <EntityType Name="Password">
+          <Key>
+            <PropertyRef Name="PasswordID" />
+          </Key>
+          <Property Name="PasswordID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HashedPassword" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Salt" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Employees" Relationship="Self.fk_Eomployee2" FromRole="Password" ToRole="Employee" />
+          <NavigationProperty Name="Farmers" Relationship="Self.FK_Farmer1" FromRole="Password" ToRole="Farmer" />
+        </EntityType>
+        <EntityType Name="ProductList">
+          <Key>
+            <PropertyRef Name="listId" />
+          </Key>
+          <Property Name="listId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="farmerId" Type="Int32" Nullable="false" />
+          <Property Name="prodTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Farmer" Relationship="Self.fk_ProductList1" FromRole="ProductList" ToRole="Farmer" />
+          <NavigationProperty Name="ProductType" Relationship="Self.fk_ProductList2" FromRole="ProductList" ToRole="ProductType" />
+        </EntityType>
+        <EntityType Name="ProductStore">
+          <Key>
+            <PropertyRef Name="prodId" />
+          </Key>
+          <Property Name="prodId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="prodQty" Type="Int32" Nullable="false" />
+          <Property Name="prodRemaining" Type="Int32" Nullable="false" />
+          <Property Name="ProdTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ProdDateAdded" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="ProductType" Relationship="Self.fk_ProductType1" FromRole="ProductStore" ToRole="ProductType" />
+        </EntityType>
+        <EntityType Name="ProductType">
+          <Key>
+            <PropertyRef Name="pTypeId" />
+          </Key>
+          <Property Name="pTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="pType" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pDateAdded" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="ProductLists" Relationship="Self.fk_ProductList2" FromRole="ProductType" ToRole="ProductList" />
+          <NavigationProperty Name="ProductStores" Relationship="Self.fk_ProductType1" FromRole="ProductType" ToRole="ProductStore" />
+        </EntityType>
+        <Association Name="fk_Employee1">
+          <End Role="EmpType" Type="Self.EmpType" Multiplicity="1" />
+          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmpType">
+              <PropertyRef Name="EmpTypeId" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="empTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Eomployee2">
+          <End Role="Password" Type="Self.Password" Multiplicity="1" />
+          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Password">
+              <PropertyRef Name="PasswordID" />
+            </Principal>
+            <Dependent Role="Employee">
+              <PropertyRef Name="empPwdId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Farmer1">
+          <End Role="Password" Type="Self.Password" Multiplicity="1" />
+          <End Role="Farmer" Type="Self.Farmer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Password">
+              <PropertyRef Name="PasswordID" />
+            </Principal>
+            <Dependent Role="Farmer">
+              <PropertyRef Name="fPasswordId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProductList1">
+          <End Role="Farmer" Type="Self.Farmer" Multiplicity="1" />
+          <End Role="ProductList" Type="Self.ProductList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Farmer">
+              <PropertyRef Name="FarmerId" />
+            </Principal>
+            <Dependent Role="ProductList">
+              <PropertyRef Name="farmerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProductList2">
+          <End Role="ProductType" Type="Self.ProductType" Multiplicity="1" />
+          <End Role="ProductList" Type="Self.ProductList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductType">
+              <PropertyRef Name="pTypeId" />
+            </Principal>
+            <Dependent Role="ProductList">
+              <PropertyRef Name="prodTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProductType1">
+          <End Role="ProductType" Type="Self.ProductType" Multiplicity="1" />
+          <End Role="ProductStore" Type="Self.ProductStore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductType">
+              <PropertyRef Name="pTypeId" />
+            </Principal>
+            <Dependent Role="ProductStore">
+              <PropertyRef Name="ProdTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Database1Entities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Employees" EntityType="Self.Employee" />
+          <EntitySet Name="EmpTypes" EntityType="Self.EmpType" />
+          <EntitySet Name="Farmers" EntityType="Self.Farmer" />
+          <EntitySet Name="Passwords" EntityType="Self.Password" />
+          <EntitySet Name="ProductLists" EntityType="Self.ProductList" />
+          <EntitySet Name="ProductStores" EntityType="Self.ProductStore" />
+          <EntitySet Name="ProductTypes" EntityType="Self.ProductType" />
+          <AssociationSet Name="fk_Employee1" Association="Self.fk_Employee1">
+            <End Role="EmpType" EntitySet="EmpTypes" />
+            <End Role="Employee" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Eomployee2" Association="Self.fk_Eomployee2">
+            <End Role="Password" EntitySet="Passwords" />
+            <End Role="Employee" EntitySet="Employees" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Farmer1" Association="Self.FK_Farmer1">
+            <End Role="Password" EntitySet="Passwords" />
+            <End Role="Farmer" EntitySet="Farmers" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProductList1" Association="Self.fk_ProductList1">
+            <End Role="Farmer" EntitySet="Farmers" />
+            <End Role="ProductList" EntitySet="ProductLists" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProductList2" Association="Self.fk_ProductList2">
+            <End Role="ProductType" EntitySet="ProductTypes" />
+            <End Role="ProductList" EntitySet="ProductLists" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProductType1" Association="Self.fk_ProductType1">
+            <End Role="ProductType" EntitySet="ProductTypes" />
+            <End Role="ProductStore" EntitySet="ProductStores" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Database1ModelStoreContainer" CdmEntityContainer="Database1Entities1">
+          <EntitySetMapping Name="Employees">
+            <EntityTypeMapping TypeName="Database1Model.Employee">
+              <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="empId" ColumnName="empId" />
+                <ScalarProperty Name="empName" ColumnName="empName" />
+                <ScalarProperty Name="empEmail" ColumnName="empEmail" />
+                <ScalarProperty Name="empLocation" ColumnName="empLocation" />
+                <ScalarProperty Name="empPhoneNumber" ColumnName="empPhoneNumber" />
+                <ScalarProperty Name="empTypeId" ColumnName="empTypeId" />
+                <ScalarProperty Name="empPwdId" ColumnName="empPwdId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmpTypes">
+            <EntityTypeMapping TypeName="Database1Model.EmpType">
+              <MappingFragment StoreEntitySet="EmpType">
+                <ScalarProperty Name="EmpTypeId" ColumnName="EmpTypeId" />
+                <ScalarProperty Name="tName" ColumnName="tName" />
+                <ScalarProperty Name="tDescription" ColumnName="tDescription" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Farmers">
+            <EntityTypeMapping TypeName="Database1Model.Farmer">
+              <MappingFragment StoreEntitySet="Farmer">
+                <ScalarProperty Name="FarmerId" ColumnName="FarmerId" />
+                <ScalarProperty Name="fName" ColumnName="fName" />
+                <ScalarProperty Name="sName" ColumnName="sName" />
+                <ScalarProperty Name="fEmail" ColumnName="fEmail" />
+                <ScalarProperty Name="fLocation" ColumnName="fLocation" />
+                <ScalarProperty Name="fPhoneNumber" ColumnName="fPhoneNumber" />
+                <ScalarProperty Name="fPasswordId" ColumnName="fPasswordId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Passwords">
+            <EntityTypeMapping TypeName="Database1Model.Password">
+              <MappingFragment StoreEntitySet="Password">
+                <ScalarProperty Name="PasswordID" ColumnName="PasswordID" />
+                <ScalarProperty Name="HashedPassword" ColumnName="HashedPassword" />
+                <ScalarProperty Name="Salt" ColumnName="Salt" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductLists">
+            <EntityTypeMapping TypeName="Database1Model.ProductList">
+              <MappingFragment StoreEntitySet="ProductList">
+                <ScalarProperty Name="listId" ColumnName="listId" />
+                <ScalarProperty Name="farmerId" ColumnName="farmerId" />
+                <ScalarProperty Name="prodTypeId" ColumnName="prodTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductStores">
+            <EntityTypeMapping TypeName="Database1Model.ProductStore">
+              <MappingFragment StoreEntitySet="ProductStore">
+                <ScalarProperty Name="prodId" ColumnName="prodId" />
+                <ScalarProperty Name="prodQty" ColumnName="prodQty" />
+                <ScalarProperty Name="prodRemaining" ColumnName="prodRemaining" />
+                <ScalarProperty Name="ProdTypeId" ColumnName="ProdTypeId" />
+                <ScalarProperty Name="ProdDateAdded" ColumnName="ProdDateAdded" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductTypes">
+            <EntityTypeMapping TypeName="Database1Model.ProductType">
+              <MappingFragment StoreEntitySet="ProductType">
+                <ScalarProperty Name="pTypeId" ColumnName="pTypeId" />
+                <ScalarProperty Name="pType" ColumnName="pType" />
+                <ScalarProperty Name="pName" ColumnName="pName" />
+                <ScalarProperty Name="pDateAdded" ColumnName="pDateAdded" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

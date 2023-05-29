@@ -1,0 +1,33 @@
+﻿/* Site.css */
+
+body {
+    padding-top: 60px;
+}
+
+.navbar {
+    background-color: #343a40;
+}
+
+.navbar-brand {
+    color: black;
+    font-weight: bold;
+}
+
+.navbar-toggler {
+    border-color: #ffffff;
+}
+
+.navbar-toggler-icon {
+    background-color: #ffffff;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #ffffff;
+}
+
+footer {
+    margin-top: 20px;
+    padding: 10px 0;
+    text-align: center;
+    background-color: #f8f9fa;
+}
